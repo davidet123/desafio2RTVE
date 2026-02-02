@@ -1,0 +1,16 @@
+{
+  "fuente": "CEAM / Copernicus Marine",
+  "variable": "Temperatura Superficial del Mar (TSM) - Valencia",
+  "unidad": "°C",
+  "descripcion": "Evolución de la temperatura del agua durante el episodio DANA",
+  "dataset": [
+    {"dia": "2024-10-20", "temp_mar": 23.2, "media_historica": 21.5, "anomalia": 1.7},
+    {"dia": "2024-10-22", "temp_mar": 22.9, "media_historica": 21.3, "anomalia": 1.6},
+    {"dia": "2024-10-24", "temp_mar": 22.7, "media_historica": 21.1, "anomalia": 1.6},
+    {"dia": "2024-10-26", "temp_mar": 22.5, "media_historica": 21.0, "anomalia": 1.5},
+    {"dia": "2024-10-28", "temp_mar": 22.2, "media_historica": 20.9, "anomalia": 1.3},
+    {"dia": "2024-10-29", "temp_mar": 22.1, "media_historica": 20.8, "anomalia": 1.3},
+    {"dia": "2024-10-30", "temp_mar": 21.8, "media_historica": 20.7, "anomalia": 1.1},
+    {"dia": "2024-11-01", "temp_mar": 21.5, "media_historica": 20.5, "anomalia": 1.0}
+  ]
+}

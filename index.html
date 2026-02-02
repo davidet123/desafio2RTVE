@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DANA Valencia — Análisis Meteorológico</title>
+
+  <link rel="stylesheet" href="style/style.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+
+  <main class="slides">
+
+    <!-- 1 INTRO -->
+    <section class="slide intro">
+      <div class="content">
+        <h1>DANA Valencia 29 Oct 2024</h1>
+        <p>Análisis del fenómeno meteorológico</p>
+      </div>
+    </section>
+
+    <!-- 2 MAPA GENERAL -->
+    <section class="slide map-slide">
+      <div class="text-block">
+        <h2>Distribución espacial de precipitaciones</h2>
+        <p>Acumulados por municipio durante el episodio.</p>
+      </div>
+      
+      <div class="map-controls">
+        <div class="map-mode-selector">
+          <button id="mode-choropleth" class="map-btn active" onclick="changeMapMode('choropleth')">
+            <i class="icon">🗺️</i> Mapa de Acumulados
+          </button>
+          <button id="mode-heatmap" class="map-btn" onclick="changeMapMode('heatmap')">
+            <i class="icon">🔥</i> Mapa de Calor
+          </button>
+        </div>
+        
+        <div id="map-legend" class="map-legend">
+          <div class="legend-title">Leyenda (mm)</div>
+          <div class="legend-gradient"></div>
+          <div class="legend-labels">
+            <span>0</span>
+            <span>50</span>
+            <span>100</span>
+            <span>200</span>
+            <span>400</span>
+            <span>600+</span>
+          </div>
+        </div>
+      </div>
+      
+      <div id="map"></div>
+    </section>
+
+    <!-- 3 GRÁFICA INTENSIDAD + ACUMULADO -->
+    <section class="slide chart-slide">
+      <div class="text-block">
+        <h2>Intensidad y acumulado por estación</h2>
+        <div id="stationSelector"></div>
+      </div>
+      <canvas id="comboChart"></canvas>
+    </section>
+
+    <!-- 4 COMPARATIVA ENTRE ESTACIONES -->
+    <section class="slide chart-slide">
+      <div class="text-block">
+        <h2>Comparativa de intensidad entre estaciones</h2>
+        <div id="multiStationSelector"></div>
+      </div>
+      <canvas id="multiLineChart"></canvas>
+    </section>
+
+    <!-- 5 TEMPERATURA DEL MAR -->
+    <section class="slide chart-slide">
+      <div class="text-block">
+        <h2>Temperatura superficial del mar</h2>
+        <p>Anomalía térmica previa al episodio</p>
+      </div>
+      <canvas id="seaTempChart"></canvas>
+    </section>
+
+    <!-- 6 CIERRE -->
+    <section class="slide outro">
+      <div class="content">
+        <h2>Conclusión meteorológica</h2>
+        <p>Evento extremo favorecido por condiciones previas.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script src="js/map.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/main.js"></script>
+
+</body>
+</html>

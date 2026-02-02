@@ -1,0 +1,317 @@
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: #0f172a;
+  color: white;
+}
+
+/* SCROLL PRESENTACIÓN */
+.slides {
+  scroll-snap-type: y mandatory;
+  overflow-y: scroll;
+  height: 100vh;
+}
+
+.slide {
+  scroll-snap-align: start;
+  min-height: 100vh;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+}
+
+.text-block {
+  max-width: 700px;
+  margin-bottom: 20px;
+}
+
+/* MAPA */
+#map {
+  width: 100%;
+  height: 60vh;
+  border-radius: 10px;
+}
+
+/* GRÁFICOS */
+canvas {
+  background: white;
+  border-radius: 10px;
+  padding: 10px;
+  max-height: 65vh;
+}
+
+/* SELECTORES */
+#stationSelector,
+#multiStationSelector {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+button.selector-btn {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+/* INTRO / OUTRO */
+.intro, .outro {
+  text-align: center;
+}
+
+/* Controles del mapa */
+.map-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding: 10px 15px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.map-mode-selector {
+  display: flex;
+  gap: 10px;
+}
+
+.map-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: rgba(15, 23, 42, 0.9);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  color: #e2e8f0;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.map-btn:hover {
+  background: rgba(30, 41, 59, 0.9);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.map-btn.active {
+  background: rgba(59, 130, 246, 0.3);
+  border-color: #3b82f6;
+  color: #93c5fd;
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+}
+
+.map-btn .icon {
+  font-size: 16px;
+}
+
+/* Leyenda del mapa */
+.map-legend {
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  padding: 10px 15px;
+  min-width: 200px;
+}
+
+.legend-title {
+  color: #f1f5f9;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.legend-gradient {
+  height: 15px;
+  width: 100%;
+  background: linear-gradient(to right, 
+    #ffffb2 0%, 
+    #fecc5c 20%, 
+    #fd8d3c 40%, 
+    #f03b20 60%, 
+    #bd0026 80%, 
+    #49006a 100%
+  );
+  border-radius: 3px;
+  margin-bottom: 5px;
+}
+
+.legend-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: #cbd5e1;
+}
+
+/* Contenedor del mapa */
+#map {
+  width: 100%;
+  height: 600px;
+  position: relative;
+}
+
+/* Asegurar que el pane del overlay está correctamente posicionado */
+.leaflet-overlay-pane {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Asegurar que el canvas del heatmap no tapa todo */
+.leaflet-heatmap-layer {
+  pointer-events: none !important;
+  z-index: 400 !important; /* Entre tiles (200) y overlays (400+) */
+}
+
+/* Cuando el heatmap está activo, asegurar que el contenedor mantiene dimensiones */
+.map-slide {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* Asegurar que los controles están por encima */
+.map-controls {
+  position: relative;
+  z-index: 1000;
+}
+
+/* Leaflet override para modo oscuro */
+.leaflet-container {
+  background: #0f172a !important;
+  font-family: system-ui, sans-serif;
+}
+
+.leaflet-control-attribution {
+  background: rgba(15, 23, 42, 0.8) !important;
+  color: #cbd5e1 !important;
+  font-size: 10px !important;
+}
+
+.leaflet-control-attribution a {
+  color: #93c5fd !important;
+}
+
+.leaflet-popup-content-wrapper {
+  background: rgba(15, 23, 42, 0.95) !important;
+  color: #f1f5f9 !important;
+  border-radius: 6px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.leaflet-popup-tip {
+  background: rgba(15, 23, 42, 0.95) !important;
+}
+
+/* Contenedor de checkboxes - Fondo oscuro */
+#multiStationSelector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding: 15px;
+  background: rgba(255, 255, 255, 0.05); /* Fondo ligeramente más claro que el body */
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+}
+
+.checkbox-container input[type="checkbox"] {
+  display: none; /* Ocultamos el checkbox nativo */
+}
+
+/* Etiquetas de los checkboxes - Fondo oscuro */
+.checkbox-container label {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(15, 23, 42, 0.8); /* Fondo oscuro similar al body */
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  user-select: none;
+  font-size: 14px;
+  color: #e2e8f0; /* Texto claro */
+}
+
+.checkbox-container label:hover {
+  background: rgba(30, 41, 59, 0.8); /* Fondo más claro al hover */
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+/* Estado activo/checked */
+.checkbox-container input[type="checkbox"]:checked + label {
+  background: rgba(15, 23, 42, 0.9); /* Fondo un poco más oscuro */
+  border-color: currentColor; /* Usa el color de la línea */
+  box-shadow: 0 0 0 1px currentColor, 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  font-weight: 500;
+}
+
+/* Marcador de color - más brillante para contrastar con fondo oscuro */
+.color-marker {
+  width: 16px !important;
+  height: 16px !important;
+  border-radius: 4px !important;
+  margin-right: 10px !important;
+  border: 2px solid rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Para texto más legible en fondo oscuro */
+.checkbox-container label {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Versión con checkbox visible */
+.checkbox-visible input[type="checkbox"] {
+  display: inline-block !important;
+  margin-right: 8px;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  filter: brightness(1.2); /* Hacer el checkbox más brillante */
+}
+
+/* Grid layout */
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 8px;
+}
+
+/* Botones de selección (si los usas) */
+.btn-select-all {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.btn-select-all:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+}
