@@ -1,103 +1,146 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DANA Valencia — Análisis Meteorológico</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DANA Valencia — Análisis Meteorológico</title>
 
-  <link rel="stylesheet" href="style/style.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="style/style.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
 
-  <main class="slides">
+  <main class="slides">
+    <section class="slide intro">
+      <div class="content">
+        <h1>29 de octubre de 2024</h1>
+      </div>
+      <p>Un análisis detallado de la DANA que azotó la provincia de Valencia el 29 de octubre de 2024.</p>
+    </section>
 
-    <!-- 1 INTRO -->
-    <section class="slide intro">
-      <div class="content">
-        <h1>DANA Valencia 29 Oct 2024</h1>
-        <p>Análisis del fenómeno meteorológico</p>
-      </div>
-    </section>
+    <!-- 1 INTRO -->
+    <section class="slide text-slide">
+      <div class="content">
+        <h1>DANA Valencia: El episodio del siglo</h1>
+        <p>El 29 de octubre de 2024, la Comunitat Valenciana vivió uno de los episodios meteorológicos más catastróficos de su historia reciente. Una Depresión Aislada en Niveles Altos (DANA) se situó en una posición crítica para canalizar un flujo de humedad mediterránea excepcional hacia el interior de la provincia de Valencia.</p>
+      </div>
+    </section>
 
-    <!-- 2 MAPA GENERAL -->
-    <section class="slide map-slide">
-      <div class="text-block">
-        <h2>Distribución espacial de precipitaciones</h2>
-        <p>Acumulados por municipio durante el episodio.</p>
-      </div>
-      
-      <div class="map-controls">
-        <div class="map-mode-selector">
-          <button id="mode-choropleth" class="map-btn active" onclick="changeMapMode('choropleth')">
-            <i class="icon">🗺️</i> Mapa de Acumulados
-          </button>
-          <button id="mode-heatmap" class="map-btn" onclick="changeMapMode('heatmap')">
-            <i class="icon">🔥</i> Mapa de Calor
-          </button>
-        </div>
-        
-        <div id="map-legend" class="map-legend">
-          <div class="legend-title">Leyenda (mm)</div>
-          <div class="legend-gradient"></div>
-          <div class="legend-labels">
-            <span>0</span>
-            <span>50</span>
-            <span>100</span>
-            <span>200</span>
-            <span>400</span>
-            <span>600+</span>
-          </div>
-        </div>
-      </div>
-      
-      <div id="map"></div>
-    </section>
+    <!-- 2 TEXTO MAPA -->
+    <section class="slide text-slide">
+      <div class="content">
+        <h2>La mancha de la catástrofe</h2>
+        <p>La distribución de la lluvia no fue uniforme. Mientras en el litoral las intensidades fueron altas pero manejables, en el interior se formó un sistema de tormentas regenerativas. Este "tren de núcleos" descargó cantidades superiores a los 300 mm en una franja que cruza las cuencas del Magro y el Poyo, áreas que habitualmente están secas.</p>
+        <p class="note">💡 Explora los municipios en el mapa para ver los acumulados totales de 24 horas.</p>
+      </div>
+    </section>
 
-    <!-- 3 GRÁFICA INTENSIDAD + ACUMULADO -->
-    <section class="slide chart-slide">
-      <div class="text-block">
-        <h2>Intensidad y acumulado por estación</h2>
-        <div id="stationSelector"></div>
-      </div>
-      <canvas id="comboChart"></canvas>
-    </section>
+    <!-- 3 MAPA -->
+    <section class="slide map-slide">
+      <div class="text-block">
+        <h2>Distribución espacial de precipitaciones</h2>
+        <p>Acumulados por municipio durante el episodio.</p>
+      </div>
+      
+      <div class="map-controls">
+        <div class="map-mode-selector" role="group" aria-label="Modos de visualización del mapa">
+          <button id="mode-choropleth" class="map-btn active" onclick="changeMapMode('choropleth')" aria-pressed="true">
+             Mapa de Acumulados
+          </button>
+          <button id="mode-heatmap" class="map-btn" onclick="changeMapMode('heatmap')" aria-pressed="false">
+            Mapa de Calor
+          </button>
+        </div>
+        
+        <div id="map-legend" class="map-legend">
+          <div class="legend-title">Leyenda (mm)</div>
+          <div class="legend-gradient"></div>
+          <div class="legend-labels">
+            <span>0</span>
+            <span>50</span>
+            <span>100</span>
+            <span>200</span>
+            <span>400</span>
+            <span>600+</span>
+          </div>
+        </div>
+      </div>
+      
+      <div id="map"></div>
+      <div class="content text-slide">
+        <p class="note">Explora los municipios en el mapa para ver los acumulados totales de 24 horas.</p>
+      </div>
+    </section>
 
-    <!-- 4 COMPARATIVA ENTRE ESTACIONES -->
-    <section class="slide chart-slide">
-      <div class="text-block">
-        <h2>Comparativa de intensidad entre estaciones</h2>
-        <div id="multiStationSelector"></div>
-      </div>
-      <canvas id="multiLineChart"></canvas>
-    </section>
+    <!-- 4 TEXTO INTENSIDAD -->
+    <section class="slide text-slide">
+      <div class="content">
+        <h2>Turís: El récord imbatible</h2>
+        <p>La estación de Turís (Mas de Calabarra) registró un dato que redefine la climatología española: 772 mm en un solo día. Lo más crítico fue la eficiencia de la tormenta, que llegó a descargar 185 mm en tan solo una hora. Esta intensidad brutal es la que convirtió los barrancos en muros de agua imposibles de contener.</p>
+        <p class="highlight">Turís batió el récord histórico de España en 1h, 6h y 12h.</p>
+      </div>
+    </section>
 
-    <!-- 5 TEMPERATURA DEL MAR -->
-    <section class="slide chart-slide">
-      <div class="text-block">
-        <h2>Temperatura superficial del mar</h2>
-        <p>Anomalía térmica previa al episodio</p>
-      </div>
-      <canvas id="seaTempChart"></canvas>
-    </section>
+    <!-- 5 GRÁFICA INTENSIDAD + ACUMULADO -->
+    <section class="slide chart-slide">
+      <div class="text-block">
+        <div id="stationSelector"></div>
+      </div>
+      <div class="chart-container">
+        <canvas id="comboChart"></canvas>
+      </div>
+    </section>
 
-    <!-- 6 CIERRE -->
-    <section class="slide outro">
-      <div class="content">
-        <h2>Conclusión meteorológica</h2>
-        <p>Evento extremo favorecido por condiciones previas.</p>
-      </div>
-    </section>
+    <!-- 6 TEXTO COMPARATIVA -->
+    <section class="slide text-slide">
+      <div class="content">
+        <h2>Sincronía del desastre</h2>
+        <p>Al comparar estaciones como Utiel, Chiva y Turís, observamos una pendiente de acumulación casi vertical durante la tarde del 29 de octubre. Mientras en Utiel el pico fue matinal (causando el desbordamiento del río Magro), en el centro de la provincia la intensidad máxima se desplazó hacia la tarde, coincidiendo con la bajada de las riadas hacia la Horta Sud.</p>
+      </div>
+    </section>
 
-  </main>
+    <!-- 7 COMPARATIVA ENTRE ESTACIONES -->
+    <section class="slide chart-slide">
+      <div class="text-block">
+        <div id="multiStationSelector"></div>
+      </div>
+      <div class="chart-container">
+        <canvas id="multiLineChart"></canvas>
+      </div>
+    </section>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- 8 TEXTO TEMPERATURA -->
+    <section class="slide text-slide">
+      <div class="content">
+        <h2>El motor del evento: Anomalía térmica</h2>
+        <p>Las DANAs son fenómenos habituales en otoño, pero su severidad depende del "combustible". En 2024, el Mediterráneo presentaba temperaturas de hasta 2°C por encima de la media histórica. Este exceso de energía térmica aumentó la evaporación y la inestabilidad, permitiendo que las nubes retuvieran y descargaran una cantidad de agua sin precedentes.</p>
+      </div>
+    </section>
 
-  <script src="js/map.js"></script>
-  <script src="js/charts.js"></script>
-  <script src="js/main.js"></script>
+    <!-- 9 TEMPERATURA DEL MAR -->
+    <section class="slide chart-slide">
+      <div class="chart-container">
+        <canvas id="seaTempChart"></canvas>
+      </div>
+    </section>
+
+    <!-- 10 CIERRE -->
+    <section class="slide outro">
+      <div class="content">
+        <h2>Un nuevo escenario climático</h2>
+        <p>El episodio de octubre de 2024 marca un antes y un después en la gestión del riesgo meteorológico. La combinación de una atmósfera dinámica y un mar sobrecalentado generó un evento cuya magnitud técnica superó todos los umbrales de aviso previos, recordándonos la vulnerabilidad del territorio ante los extremos climáticos.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script src="js/map.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/main.js"></script>
 
 </body>
 </html>

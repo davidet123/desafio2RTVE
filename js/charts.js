@@ -1,354 +1,507 @@
+
 let comboChart, multiLineChart, seaTempChart;
 let precipData;
 
 function loadPrecipitationCharts() {
-  fetch('data/datos_precipitacion.json')
-    .then(res => res.json())
-    .then(data => {
-      precipData = data;
-      createStationButtons(data.estaciones);
-      initComboChart(data);
-      initMultiChart(data);
-    });
+  fetch('data/datos_precipitacion.json')
+    .then(res => {
+      if (!res.ok) throw new Error('Error cargando precipitación');
+      return res.json();
+    })
+    .then(data => {
+      precipData = data;
+      initComboChart(data);
+      initMultiChart(data);
+      createStationButtons(data.estaciones);
+    })
+    .catch(err => {
+      console.error('Error cargando gráficas:', err);
+      document.getElementById('stationSelector').innerHTML = 
+        '<p style="color: #ef4444; font-size: 12px;">Error cargando datos de estaciones</p>';
+    });
 }
 
 function createStationButtons(stations) {
-  const container = document.getElementById("stationSelector");
-  Object.entries(stations).forEach(([key, st]) => {
-    const btn = document.createElement("button");
-    btn.textContent = st.label;
-    btn.className = "selector-btn";
-    btn.onclick = () => updateComboChart(key);
-    container.appendChild(btn);
-  });
+  const container = document.getElementById("stationSelector");
+  Object.entries(stations).forEach(([key, st]) => {
+    const btn = document.createElement("button");
+    btn.textContent = st.label;
+    btn.className = "selector-btn";
+    btn.onclick = () => updateComboChart(key);
+    container.appendChild(btn);
+  });
+
+  const firstKey = Object.keys(stations)[0];
+  console.log(firstKey)
+  if (firstKey) updateComboChart(firstKey);
 }
 
 function initComboChart(data) {
-  const ctx = document.getElementById('comboChart');
-  comboChart = new Chart(ctx, {
-    type: 'bar', // Tipo principal
-    data: { 
-      labels: data.config.labels, 
-      datasets: [] 
+  const ctx = document.getElementById('comboChart');
+  
+  if (comboChart) {
+    comboChart.destroy();
+  }
+  
+  comboChart = new Chart(ctx, {
+    type: 'bar',
+    data: { 
+      labels: data.config.labels, 
+      datasets: [
+        {
+          type: 'line',
+          label: 'Intensidad',
+          data: [],
+          borderColor: '#36a2eb',
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          tension: 0.3,
+          pointRadius: 3,
+          pointBackgroundColor: '#36a2eb',
+          yAxisID: 'y'
+        },
+        {
+          type: 'line',
+          label: 'Acumulado',
+          data: [],
+          yAxisID: 'y1',
+          borderColor: '#ff6384',
+          backgroundColor: 'rgba(255, 99, 132, 0.3)',
+          borderWidth: 0,
+          pointRadius: 0,
+          tension: 0.3,
+          fill: 'origin'
+        }
+      ] 
+    },
+    animation: {
+      duration: 800,
+      easing: 'easeOutQuart'
     },
-    options: { 
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: {
-        mode: 'index',
-        intersect: false
-      },
-      plugins: {
-        legend: {
-          position: 'top',
-        },
-        tooltip: {
-          mode: 'index',
-          intersect: false
-        }
-      },
-      scales: {
-        x: {
-          title: {
-            display: true,
-            text: 'Tiempo'
-          }
-        },
-        y: {
-          type: 'linear',
-          position: 'left', // Eje izquierdo para intensidad
-          title: {
-            display: true,
-            text: 'Intensidad (mm/h)'
-          },
-          grid: {
-            drawBorder: true
-          },
-          beginAtZero: true
-        },
-        y1: {
-          type: 'linear',
-          position: 'right', // Eje derecho para acumulado
-          title: {
-            display: true,
-            text: 'Acumulado (mm)'
-          },
-          grid: {
-            drawOnChartArea: false, // No dibujar grid del eje derecho
-          },
-          beginAtZero: true
-        }
-      }
-    }
-  });
+    options: { 
+      responsive: true,
+      maintainAspectRatio: false,
+      resizeDelay: 100,
+      interaction: {
+        mode: 'index',
+        intersect: false
+      },
+      plugins: {
+        title: {
+          display: false
+        },
+        legend: {
+          position: 'top',
+          align: 'end',
+          labels: {
+            boxWidth: 12,
+            boxHeight: 12,
+            padding: 10,
+            font: {
+              size: 11,
+              family: 'system-ui'
+            },
+            usePointStyle: true,
+            pointStyle: 'rectRounded'
+          }
+        },
+        tooltip: {
+          mode: 'index',
+          intersect: false,
+          titleFont: { size: 12 },
+          bodyFont: { size: 11 }
+        }
+      },
+      scales: {
+        x: {
+          ticks: {
+            maxRotation: 45,
+            minRotation: 45,
+            autoSkip: true,
+            maxTicksLimit: 8,
+            font: { size: 10 }
+          },
+          grid: {
+            display: false
+          }
+        },
+        y: {
+          type: 'linear',
+          position: 'left',
+          title: {
+            display: true,
+            text: 'Intensidad (mm/h)',
+            font: { size: 10, weight: 'bold' },
+            color: '#36a2eb'
+          },
+          ticks: { font: { size: 10 } },
+          grid: { color: 'rgba(0,0,0,0.05)' },
+          beginAtZero: true,
+          max: 200
+        },
+        y1: {
+          type: 'linear',
+          position: 'right',
+          title: {
+            display: true,
+            text: 'Acumulado (mm)',
+            font: { size: 10, weight: 'bold' },
+            color: '#ff6384'
+          },
+          ticks: { font: { size: 10 } },
+          grid: { drawOnChartArea: false },
+          beginAtZero: true,
+          max: 800
+        }
+      }
+    }
+  });
+  
+  // Añadir fuente debajo del gráfico
+  addChartSource('comboChart', 'AVAMET');
 }
 
 function updateComboChart(stationKey) {
-  const st = precipData.estaciones[stationKey];
-  comboChart.data.datasets = [
-    {
-      type: 'line',
-      label: 'Intensidad',
-      data: st.intensidad,
-      borderColor: '#36a2eb',
-      backgroundColor: 'transparent',
-      borderWidth: 3,
-      tension: 0.2, // Línea suavizada
-      fill: false
-    },
-    {
-      type: 'line',
-      label: 'Acumulado',
-      data: st.acumulado,
-      yAxisID: 'y1',
-      borderColor: '#ff6384',
-      backgroundColor: 'rgba(255, 99, 132, 0.4)',
-      borderWidth: 0, // Sin borde para efecto de área pura
-      pointRadius: 0,
-      tension: 0.3, // Curva suavizada
-      fill: {
-        target: 'origin',
-        above: 'rgba(255, 99, 132, 0.4)' // Relleno desde el eje X
-      }
-    }
-  ];
-  comboChart.update();
+  const st = precipData.estaciones[stationKey];
+  
+  document.querySelectorAll('#stationSelector .selector-btn').forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.textContent === st.label) {
+      btn.classList.add('active');
+    }
+  });
+  
+  comboChart.data.datasets[0].data = st.intensidad;
+  comboChart.data.datasets[1].data = st.acumulado;
+  
+  comboChart.update();
 }
 
 function initMultiChart(data) {
-  const ctx = document.getElementById('multiLineChart');
-  multiLineChart = new Chart(ctx, {
-    type: 'line',
-    data: { 
-      labels: data.config.labels, 
-      datasets: [] 
-    },
-    options: { 
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          display: false // Ocultamos la leyenda del gráfico ya que tendremos checkboxes
-        },
-        tooltip: {
-          mode: 'index',
-          intersect: false
-        }
-      },
-      scales: {
-        x: {
-          title: {
-            display: true,
-            text: 'Tiempo'
-          }
-        },
-        y: {
-          title: {
-            display: true,
-            text: 'Intensidad (mm/h)'
-          },
-          beginAtZero: true
-        }
-      },
-      interaction: {
-        mode: 'nearest',
-        axis: 'x',
-        intersect: false
-      },
-      elements: {
-        line: {
-          tension: 0.3
-        }
-      }
+  const ctx = document.getElementById('multiLineChart');
+  
+  if (multiLineChart) {
+    multiLineChart.destroy();
+  }
+  
+  multiLineChart = new Chart(ctx, {
+    type: 'line',
+    data: { 
+      labels: data.config.labels, 
+      datasets: [] 
+    },
+    options: { 
+      responsive: true,
+      maintainAspectRatio: false,
+      resizeDelay: 100,
+      plugins: {
+        title: {
+          display: false
+        },
+        legend: {
+          display: true,
+          position: 'top',
+          align: 'center',
+          labels: {
+            boxWidth: 10,
+            boxHeight: 10,
+            padding: 8,
+            font: { size: 10 },
+            usePointStyle: true,
+            pointStyle: 'circle'
+          }
+        },
+        tooltip: {
+          mode: 'index',
+          intersect: false
+        }
+      },
+      scales: {
+        x: {
+          ticks: {
+            maxRotation: 0,
+            autoSkip: true,
+            maxTicksLimit: 6,
+            font: { size: 10 }
+          },
+          grid: { display: false }
+        },
+        y: {
+          title: {
+            display: true,
+            text: 'Intensidad (mm/h)',
+            font: { size: 10, weight: 'bold' }
+          },
+          ticks: { font: { size: 10 } },
+          grid: { color: 'rgba(0,0,0,0.05)' },
+          beginAtZero: true
+        }
+      },
+      elements: {
+        line: {
+          tension: 0.3,
+          borderWidth: 2
+        },
+        point: {
+          radius: 2,
+          hoverRadius: 4
+        }
+      }
+    }
+  });
+
+  const container = document.getElementById("multiStationSelector");
+  container.innerHTML = '';
+
+  let first = true;
+
+  Object.entries(data.estaciones).forEach(([key, st]) => {
+    const color = getColorForStation(key);
+    
+    const checkboxContainer = document.createElement("div");
+    checkboxContainer.className = "checkbox-container";
+    
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.id = `station-${key}`;
+    checkbox.dataset.key = key;
+    checkbox.dataset.label = st.label;
+    checkbox.onchange = (e) => toggleStationLine(key, st, e);
+    
+    const label = document.createElement("label");
+    label.htmlFor = `station-${key}`;
+    
+    const colorMarker = document.createElement("span");
+    colorMarker.className = "color-marker";
+    colorMarker.style.width = "12px";
+    colorMarker.style.height = "12px";
+    colorMarker.style.backgroundColor = color;
+    colorMarker.style.borderRadius = "2px";
+    colorMarker.style.marginRight = "6px";
+    colorMarker.style.display = "inline-block";
+    colorMarker.style.border = "1px solid rgba(255, 255, 255, 0.3)";
+    
+    const labelText = document.createTextNode(st.label);
+    
+    label.appendChild(colorMarker);
+    label.appendChild(labelText);
+    
+    checkboxContainer.appendChild(checkbox);
+    checkboxContainer.appendChild(label);
+    container.appendChild(checkboxContainer);
+    if (first) {
+      checkbox.checked = true;
+      first = false;
+      toggleStationLine(key, st, { target: checkbox });
     }
-  });
-
-  const container = document.getElementById("multiStationSelector");
-  container.innerHTML = ''; // Limpiar contenedor
-
-  Object.entries(data.estaciones).forEach(([key, st]) => {
-    const color = getColorForStation(key);
-    
-    // Crear contenedor para cada checkbox
-    const checkboxContainer = document.createElement("div");
-    checkboxContainer.className = "checkbox-container";
-    checkboxContainer.style.marginBottom = "5px";
-    
-    // Crear checkbox
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.id = `station-${key}`;
-    checkbox.dataset.key = key;
-    checkbox.dataset.label = st.label;
-    checkbox.onchange = (e) => toggleStationLine(key, st, e);
-    
-    // Crear label con color
-    const label = document.createElement("label");
-    label.htmlFor = `station-${key}`;
-    label.style.display = "flex";
-    label.style.alignItems = "center";
-    label.style.cursor = "pointer";
-    label.style.padding = "5px 8px";
-    label.style.borderRadius = "4px";
-    label.style.transition = "background 0.3s";
-    
-    // Marcador de color
-    const colorMarker = document.createElement("span");
-    colorMarker.className = "color-marker";
-    colorMarker.style.width = "15px";
-    colorMarker.style.height = "15px";
-    colorMarker.style.backgroundColor = color;
-    colorMarker.style.borderRadius = "3px";
-    colorMarker.style.marginRight = "8px";
-    colorMarker.style.display = "inline-block";
-    colorMarker.style.border = "2px solid " + color;
-    
-    // Texto del label
-    const labelText = document.createTextNode(st.label);
-    
-    label.appendChild(colorMarker);
-    label.appendChild(labelText);
-    
-    checkboxContainer.appendChild(checkbox);
-    checkboxContainer.appendChild(label);
-    container.appendChild(checkboxContainer);
-  });
+  });
+  
+  // Añadir fuente debajo del gráfico
+  addChartSource('multiLineChart', 'AVAMET');
 }
 
 function toggleStationLine(key, st, event) {
-  const checkbox = event.target;
-  const isChecked = checkbox.checked;
-  const existingIndex = multiLineChart.data.datasets.findIndex(d => d.key === key);
-  
-  if (!isChecked) {
-    if (existingIndex >= 0) {
-      multiLineChart.data.datasets.splice(existingIndex, 1);
-    }
-  } else {
-    const color = getColorForStation(key);
-    const newDataset = {
-      key: key,
-      label: st.label,
-      data: st.intensidad,
-      borderColor: color,
-      backgroundColor: color + '40', // Más transparencia para fondo oscuro
-      borderWidth: 2,
-      tension: 0.3,
-      fill: false,
-      pointRadius: 3,
-      pointBackgroundColor: color,
-      pointBorderColor: '#0f172a', // Borde oscuro para los puntos
-      pointBorderWidth: 1
-    };
-    
-    multiLineChart.data.datasets.push(newDataset);
-  }
-  
-  // Aplicar estilos al label cuando está activo - ajustado para fondo oscuro
-  const label = checkbox.nextElementSibling;
-  if (isChecked) {
-    label.style.backgroundColor = 'rgba(30, 41, 59, 0.8)'; // Fondo azul oscuro
-    label.style.borderColor = getColorForStation(key);
-    label.style.color = '#f1f5f9'; // Texto más blanco
-    label.style.fontWeight = '500';
-  } else {
-    label.style.backgroundColor = 'rgba(15, 23, 42, 0.8)'; // Volver al fondo original
-    label.style.borderColor = 'rgba(255, 255, 255, 0.15)';
-    label.style.color = '#e2e8f0';
-    label.style.fontWeight = 'normal';
-  }
-  
-  multiLineChart.update();
+  const checkbox = event.target;
+  const isChecked = checkbox.checked;
+  const existingIndex = multiLineChart.data.datasets.findIndex(d => d.key === key);
+  
+  if (!isChecked) {
+    if (existingIndex >= 0) {
+      multiLineChart.data.datasets.splice(existingIndex, 1);
+    }
+  } else {
+    const color = getColorForStation(key);
+    const newDataset = {
+      key: key,
+      label: st.label,
+      data: st.intensidad,
+      borderColor: color,
+      backgroundColor: color + '20',
+      borderWidth: 2,
+      tension: 0.3,
+      fill: false,
+      pointRadius: 2,
+      pointBackgroundColor: color,
+      pointBorderColor: '#0f172a',
+      pointBorderWidth: 1
+    };
+    
+    multiLineChart.data.datasets.push(newDataset);
+  }
+  
+  const label = checkbox.nextElementSibling;
+  if (label) {
+    if (isChecked) {
+      label.style.backgroundColor = 'rgba(30, 41, 59, 0.8)';
+      label.style.borderColor = getColorForStation(key);
+      label.style.color = '#f1f5f9';
+      label.style.fontWeight = '500';
+    } else {
+      label.style.backgroundColor = 'rgba(15, 23, 42, 0.8)';
+      label.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+      label.style.color = '#e2e8f0';
+      label.style.fontWeight = 'normal';
+    }
+  }
+  
+  if (multiLineChart.data.datasets.length === 0) {
+    multiLineChart.options.plugins.title = {
+      display: true,
+      text: 'Selecciona al menos una estación',
+      color: '#94a3b8',
+      font: { size: 12 }
+    };
+  } else {
+    multiLineChart.options.plugins.title = { display: false };
+  }
+  
+  multiLineChart.update();
 }
 
-// Función para asignar colores únicos a cada estación
 function getColorForStation(key) {
-  // Colores más vibrantes para contrastar con fondo oscuro
-  const colors = [
-    '#60a5fa', // Azul brillante
-    '#f87171', // Rojo coral
-    '#fbbf24', // Amarillo dorado
-    '#34d399', // Verde esmeralda
-    '#a78bfa', // Violeta
-    '#f472b6', // Rosa
-    '#2dd4bf', // Turquesa
-    '#fb923c', // Naranja
-    '#818cf8', // Azul índigo
-    '#f59e0b', // Ámbar
-    '#10b981', // Verde esmeralda
-    '#8b5cf6', // Púrpura
-    '#ef4444', // Rojo
-    '#3b82f6', // Azul
-    '#ec4899'  // Rosa fucsia
-  ];
-  
-  let hash = 0;
-  for (let i = 0; i < key.length; i++) {
-    hash = key.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  
-  const index = Math.abs(hash) % colors.length;
-  return colors[index];
-}
-
-// Función para aplicar el efecto de resaltado (solo una línea en color)
-function applyHighlightEffect() {
-  const datasets = multiLineChart.data.datasets;
-  
-  // Si hay datasets, asegurarse de que solo el último tenga color vivo
-  if (datasets.length > 0) {
-    // Primero, poner todos en gris
-    datasets.forEach(dataset => {
-      dataset.borderColor = '#c9cbcf'; // Gris para no resaltados
-      dataset.borderWidth = 1;
-      dataset.pointRadius = 0;
-    });
-    
-    // El último dataset agregado (o el que quieras resaltar) en color
-    if (datasets.length > 0) {
-      const lastDataset = datasets[datasets.length - 1];
-      lastDataset.borderColor = getColorForStation(lastDataset.key);
-      lastDataset.borderWidth = 3;
-      lastDataset.pointRadius = 3;
-    }
-  }
-}
-
-// Actualizar estado de botones
-function updateMultiChartButtons(event, key, isRemoving) {
-  if (event && event.target) {
-    const btn = event.target;
-    
-    if (isRemoving) {
-      btn.classList.remove('active', 'highlighted');
-    } else {
-      // Remover highlighted de todos los botones
-      document.querySelectorAll('#multiStationSelector .selector-btn').forEach(b => {
-        b.classList.remove('highlighted');
-      });
-      
-      // Agregar clases al botón clickeado
-      btn.classList.add('active');
-      btn.classList.add('highlighted');
-    }
-  }
+  const colors = [
+    '#60a5fa',
+    '#f87171',
+    '#fbbf24',
+    '#34d399',
+    '#a78bfa',
+    '#f472b6',
+    '#2dd4bf',
+    '#fb923c',
+    '#818cf8',
+    '#f59e0b',
+    '#10b981',
+    '#8b5cf6',
+    '#ef4444',
+    '#3b82f6',
+    '#ec4899'
+  ];
+  
+  let hash = 0;
+  for (let i = 0; i < key.length; i++) {
+    hash = key.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  
+  const index = Math.abs(hash) % colors.length;
+  return colors[index];
 }
 
 function loadSeaTempChart() {
-  fetch('data/datos_temperatura.json')
-    .then(res => res.json())
-    .then(data => {
-      const ctx = document.getElementById('seaTempChart');
-      seaTempChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: data.dataset.map(d => d.dia),
-          datasets: [
-            { label: 'Temp Mar', data: data.dataset.map(d => d.temp_mar) },
-            { label: 'Media Histórica', data: data.dataset.map(d => d.media_historica) }
-          ]
-        },
-        options: { responsive: true }
-      });
-    });
+  fetch('data/datos_temperatura.json')
+    .then(res => res.json())
+    .then(data => {
+      const ctx = document.getElementById('seaTempChart');
+      
+      if (seaTempChart) {
+        seaTempChart.destroy();
+      }
+      
+      seaTempChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: data.dataset.map(d => {
+            const date = new Date(d.dia);
+            return `${date.getDate()}/${date.getMonth() + 1}`;
+          }),
+          datasets: [
+            { 
+              label: 'Temp Mar',
+              data: data.dataset.map(d => d.temp_mar),
+              borderColor: '#36a2eb',
+              backgroundColor: 'rgba(54, 162, 235, 0.1)',
+              borderWidth: 2,
+              tension: 0.4,
+              pointRadius: 3,
+              pointBackgroundColor: '#36a2eb'
+            },
+            { 
+              label: 'Media Histórica',
+              data: data.dataset.map(d => d.media_historica),
+              borderColor: '#ff6384',
+              backgroundColor: 'rgba(255, 99, 132, 0.1)',
+              borderWidth: 2,
+              borderDash: [5, 5],
+              tension: 0.4,
+              pointRadius: 3,
+              pointBackgroundColor: '#ff6384'
+            }
+          ]
+        },
+        options: { 
+          responsive: true,
+          maintainAspectRatio: false,
+          resizeDelay: 100,
+          plugins: {
+            title: {
+              display: false
+            },
+            legend: {
+              position: 'top',
+              align: 'end',
+              labels: {
+                boxWidth: 12,
+                boxHeight: 12,
+                padding: 10,
+                font: { size: 11 },
+                usePointStyle: true
+              }
+            }
+          },
+          scales: {
+            x: {
+              ticks: {
+                maxRotation: 45,
+                minRotation: 45,
+                autoSkip: true,
+                maxTicksLimit: 8,
+                font: { size: 10 }
+              },
+              grid: { display: false }
+            },
+            y: {
+              title: {
+                display: true,
+                text: 'Temperatura (°C)',
+                font: { size: 10, weight: 'bold' }
+              },
+              ticks: { font: { size: 10 } },
+              grid: { color: 'rgba(0,0,0,0.05)' }
+            }
+          }
+        }
+      });
+      
+      // Añadir fuente debajo del gráfico
+      addChartSource('seaTempChart', 'AVAMET');
+    })
+    .catch(err => {
+      console.error('Error cargando temperatura:', err);
+      document.getElementById('seaTempChart').style.display = 'none';
+      document.querySelector('.chart-slide:has(#seaTempChart) .text-block').innerHTML += 
+        '<p style="color: #ef4444; font-size: 12px;">Error cargando datos</p>';
+    });
+}
+
+// Función auxiliar para añadir fuente debajo del gráfico
+function addChartSource(canvasId, chartName) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  
+  // Buscar contenedor padre
+  const container = canvas.closest('.chart-container') || canvas.parentElement;
+  if (!container) return;
+  
+  // Eliminar fuente anterior si existe
+  const existingSource = container.querySelector('.chart-source');
+  if (existingSource) {
+    existingSource.remove();
+  }
+  
+  // Crear elemento de fuente
+  const sourceDiv = document.createElement('div');
+  sourceDiv.className = 'chart-source';
+  sourceDiv.textContent = `Fuente: ${chartName}`;
+  
+  // Insertar después del canvas
+  canvas.insertAdjacentElement('afterend', sourceDiv);
 }
