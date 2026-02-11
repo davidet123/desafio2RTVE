@@ -159,16 +159,25 @@ html, body {
 /* ========== MAPA ========== */
 
 .map-slide {
- position: relative;
- padding: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
 }
 
 .map-slide .text-block {
- padding: 10px;
+  padding: 10px;
+  margin-bottom: 5px;
+  z-index: 1001;
 }
 
 /* Controles del mapa */
 .map-controls {
+  width: 100%;
+  padding: 0 10px;
+  margin-bottom: 8px;
+  z-index: 1000;
+}
+/* .map-controls {
  position: absolute;
  top: 55px;
  left: 10px;
@@ -183,13 +192,12 @@ html, body {
  border-radius: 8px;
  border: 1px solid rgba(255, 255, 255, 0.1);
  backdrop-filter: blur(10px);
-}
+} */
 
 .map-mode-selector {
- display: flex;
- gap: 6px;
- flex-shrink: 1;
- flex-wrap: wrap;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
 .map-btn {
@@ -297,6 +305,18 @@ html, body {
 }
 
 /* Contenedor del mapa */
+
+#map-legend {
+  width: 100%;
+  max-width: 300px;
+  margin: 0 10px 8px 10px;
+  padding: 8px;
+  background: rgba(15, 23, 42, 0.95);
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.15);
+  z-index: 1000;
+}
+
 #map {
  width: 100%;
  height: calc(100vh - 20px);
@@ -555,19 +575,20 @@ button.selector-btn.active {
  } */
  
   #map {
-    width: calc(100% - 20px);
+    width: calc(100% - 40px);
     height: calc(100vh - 20px);
     margin: 10px;
     position: relative;
   }
 
-  .map-controls {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  right: 20px;
-  z-index: 1000;
-}
+    .map-controls {
+    padding: 0 20px;
+  }
+
+    #map-legend {
+    margin: 0 20px 10px 20px;
+    max-width: 250px;
+  }
 
 
  button.selector-btn {

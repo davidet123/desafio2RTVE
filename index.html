@@ -36,41 +36,45 @@
     </section>
 
     <!-- 3 MAPA -->
-    <section class="slide map-slide">
-      <div class="text-block">
-        <h2>Distribución espacial de precipitaciones</h2>
-        <p>Acumulados por municipio durante el episodio.</p>
-      </div>
-      
-      <div class="map-controls">
-        <div class="map-mode-selector" role="group" aria-label="Modos de visualización del mapa">
-          <button id="mode-choropleth" class="map-btn active" onclick="changeMapMode('choropleth')" aria-pressed="true">
-             Mapa de Acumulados
-          </button>
-          <button id="mode-heatmap" class="map-btn" onclick="changeMapMode('heatmap')" aria-pressed="false">
-            Mapa de Calor
-          </button>
-        </div>
-        
-        <div id="map-legend" class="map-legend">
-          <div class="legend-title">Leyenda (mm)</div>
-          <div class="legend-gradient"></div>
-          <div class="legend-labels">
-            <span>0</span>
-            <span>50</span>
-            <span>100</span>
-            <span>200</span>
-            <span>400</span>
-            <span>600+</span>
-          </div>
-        </div>
-      </div>
-      
-      <div id="map"></div>
-      <div class="content text-slide">
-        <p class="note">Explora los municipios en el mapa para ver los acumulados totales de 24 horas.</p>
-      </div>
-    </section>
+    <section class="slide map-slide">
+      <!-- TÍTULO FUERA DE LOS CONTROLES -->
+      <div class="text-block">
+        <h2>Distribución espacial de precipitaciones</h2>
+        <p>Acumulados por municipio durante el episodio.</p>
+      </div>
+      
+      <!-- CONTROLES: AHORA DEBAJO DEL TÍTULO -->
+      <div class="map-controls">
+        <div class="map-mode-selector">
+          <button id="mode-choropleth" class="map-btn active" onclick="changeMapMode('choropleth')">
+            🗺️ Mapa de Acumulados
+          </button>
+          <button id="mode-heatmap" class="map-btn" onclick="changeMapMode('heatmap')">
+            🔥 Mapa de Calor
+          </button>
+        </div>
+      </div>
+      
+      <!-- LEYENDA SEPARADA, DEBAJO DE LOS BOTONES -->
+      <div id="map-legend" class="map-legend">
+        <div class="legend-title">Leyenda (mm)</div>
+        <div class="legend-gradient"></div>
+        <div class="legend-labels">
+          <span>0</span>
+          <span>50</span>
+          <span>100</span>
+          <span>200</span>
+          <span>400</span>
+          <span>600+</span>
+        </div>
+      </div>
+      
+      <div id="map"></div>
+      
+      <div class="content text-slide">
+        <p class="note">💡 Explora los municipios en el mapa para ver los acumulados totales de 24 horas.</p>
+      </div>
+    </section>
 
     <!-- 4 TEXTO INTENSIDAD -->
     <section class="slide text-slide">
