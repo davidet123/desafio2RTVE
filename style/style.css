@@ -72,7 +72,7 @@ html, body {
 }
 .outro {
  text-align: center;
- justify-content: center;
+ justify-content: top;
  align-items: center;
  padding: 20px;
 }
@@ -84,6 +84,15 @@ html, body {
 .outro p {
  font-size: 0.9rem;
  opacity: 0.8;
+}
+
+.outro .autor {
+  position: absolute;
+  bottom: 20px;
+  font-size: 0.8rem;
+  opacity: 0.7;
+  font-style: italic;
+  margin-bottom: 10px;
 }
 
 .text-slide {
@@ -255,11 +264,23 @@ html, body {
 }
 
 .legend-gradient {
- height: 6px;
- width: 100%;
- border-radius: 2px;
- margin-bottom: 2px;
-}
+    display: block !important;  /* ← FORZADO */
+    height: 6px !important;     /* ← FORZADO */
+    width: 100% !important;     /* ← FORZADO */
+    border-radius: 2px;
+    margin-bottom: 2px;
+    background-image: linear-gradient(to right, 
+      #1e293b 0%, 
+      #0f172a 10%,
+      #f7fcb9 15%,
+      #ffffb2 30%, 
+      #fecc5c 45%, 
+      #fd8d3c 60%, 
+      #f03b20 75%, 
+      #bd0026 90%, 
+      #49006a 100%
+    );  /* ← FALLBACK: se verá aunque JS falle */
+  }
 
 .legend-labels {
  display: flex;
@@ -471,7 +492,7 @@ button.selector-btn.active {
   font-size: 1.2rem;
  }
  
- .map-controls {
+ /* .map-controls {
  position: absolute;
  top: 55px;
  left: 10px;
@@ -487,7 +508,7 @@ button.selector-btn.active {
  border: 1px solid rgba(255, 255, 255, 0.1);
  backdrop-filter: blur(10px);
  flex-wrap: nowrap;
-}
+} */
  
  .map-btn {
   padding: 10px 16px;
@@ -507,25 +528,48 @@ button.selector-btn.active {
  /* .legend-gradient {
   height: 12px;
  } */
- .legend-gradient {
-    display: block; /* Asegura que se comporte como un bloque */
-    height: 12px;   /* Aumentamos un poco el alto para que sea visible */
+ /* .legend-gradient {
+    display: block; 
+    height: 12px; 
     width: 100%;
     border-radius: 2px;
-    margin: 5px 0;  /* Damos un poco de aire arriba y abajo */
-    border: 1px solid rgba(255, 255, 255, 0.2); /* Un borde fino para que resalte */
+    margin: 5px 0;
+    border: 1px solid rgba(255, 255, 255, 0.2); 
+  } */
+
+  .legend-gradient {
+    display: block !important;
+    height: 6px !important;
+    width: 100% !important;
   }
+
  .legend-labels {
   font-size: 10px;
  }
  
- #map {
+ /* #map {
   height: calc(100vh - 40px);
   margin: 20px;
   width: calc(100% - 40px);
   border-radius: 10px;
- }
+ } */
  
+  #map {
+    width: calc(100% - 20px);
+    height: calc(100vh - 20px);
+    margin: 10px;
+    position: relative;
+  }
+
+  .map-controls {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+
  button.selector-btn {
   padding: 8px 12px;
   font-size: 13px;

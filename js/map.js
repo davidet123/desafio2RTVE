@@ -266,7 +266,11 @@ function createHeatmapLayer() {
   }
 
   const heatPoints = geoJsonData.features
-  .filter(f => f.geometry && f.properties?.meteo_prec > 0)
+  .filter(f => {
+    const val = f.properties?.meteo_prec;
+    return f.geometry && val !== null && val !== undefined && !isNaN(val) && val > 0;
+  })
+//   .filter(f => f.geometry && f.properties?.meteo_prec > 0)
   .map(feature => {
     const centroid = calcularCentroide(feature.geometry);
     return centroid ? {
@@ -429,6 +433,7 @@ function updateLegend() {
       `;
     }
     if (gradient) {
+      gradient.style.display = 'block';
       gradient.style.backgroundImage = `linear-gradient(to right, 
         #1e293b 0%, 
         #0f172a 10%,
