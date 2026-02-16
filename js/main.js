@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  initMap();
-  loadPrecipitationCharts();
-  loadSeaTempChart();
+  initMap();
+  loadPrecipitationCharts();
+  loadSeaTempChart();
 });
