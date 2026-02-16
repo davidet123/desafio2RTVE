@@ -9,10 +9,8 @@ document.addEventListener("DOMContentLoaded", () => {
     
     let dragging = false;
 
-    // Ajustar la imagen overlay al mismo tamaño que la base
     const adjustOverlayImage = () => {
       if (baseImg && overlayImg) {
-        // Hacemos que la imagen overlay tenga el mismo tamaño que la base
         overlayImg.style.width = baseImg.offsetWidth + "px";
         overlayImg.style.height = baseImg.offsetHeight + "px";
       }
@@ -28,14 +26,12 @@ document.addEventListener("DOMContentLoaded", () => {
       slider.style.left = percent + "%";
     };
 
-    // Iniciar arrastre
     const startDrag = (e) => {
       e.preventDefault();
       dragging = true;
       move(e.type === 'mousedown' ? e.clientX : e.touches[0].clientX);
     };
 
-    // Eventos
     wrapper.addEventListener("mousedown", startDrag);
     wrapper.addEventListener("touchstart", startDrag);
 
@@ -56,11 +52,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // Ajustar al cargar y al redimensionar
     window.addEventListener("load", adjustOverlayImage);
     window.addEventListener("resize", adjustOverlayImage);
     
-    // Ajuste inicial
     adjustOverlayImage();
   });
 });

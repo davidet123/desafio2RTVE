@@ -56,10 +56,8 @@ L.HeatmapLayer = L.Layer.extend({
     const bounds = map.getBounds();
     ctx.clearRect(0, 0, size.x, size.y);
     
-    // Radio FIJO para todos los puntos (no depende del valor)
     const radius = 25;
     
-    // Ordenar de menor a mayor valor para que los intensos pinten encima
     const sortedPoints = [...this.points].sort((a, b) => a.value - b.value);
     
     sortedPoints.forEach(point => {
@@ -67,13 +65,10 @@ L.HeatmapLayer = L.Layer.extend({
       
       const pixel = map.latLngToContainerPoint([point.lat, point.lng]);
       
-      // Normalizar valor 0-1 basado en max 700
       const normalizedValue = Math.max(0, Math.min(point.value / this.maxValue, 1));
       
-      // Color según intensidad (escala meteorológica estándar)
       const color = this._getColor(normalizedValue);
       
-      // Dibujar círculo con gradiente suave
       const gradient = ctx.createRadialGradient(
         pixel.x, pixel.y, 0,
         pixel.x, pixel.y, radius
@@ -91,20 +86,18 @@ L.HeatmapLayer = L.Layer.extend({
   },
 
   _getColor: function(intensity) {
-    // Escala meteorológica estándar:
-    // Azul → Verde → Amarillo → Naranja → Rojo → Púrpura
     
-    if (intensity < 0.10) return 'rgba(0, 0, 255, 0.6)';      // Azul (0-70mm)
-    if (intensity < 0.20) return 'rgba(0, 128, 255, 0.65)';   // Azul claro (70-140mm)
-    if (intensity < 0.30) return 'rgba(0, 255, 255, 0.7)';    // Cyan (140-210mm)
-    if (intensity < 0.40) return 'rgba(0, 255, 128, 0.75)';   // Verde azulado (210-280mm)
-    if (intensity < 0.50) return 'rgba(0, 255, 0, 0.8)';      // Verde (280-350mm)
-    if (intensity < 0.60) return 'rgba(128, 255, 0, 0.8)';    // Verde amarillento (350-420mm)
-    if (intensity < 0.70) return 'rgba(255, 255, 0, 0.85)';   // Amarillo (420-490mm)
-    if (intensity < 0.80) return 'rgba(255, 192, 0, 0.9)';    // Naranja claro (490-560mm)
-    if (intensity < 0.90) return 'rgba(255, 128, 0, 0.9)';    // Naranja (560-630mm)
-    if (intensity < 0.95) return 'rgba(255, 0, 0, 0.95)';     // Rojo (630-665mm)
-    return 'rgba(128, 0, 128, 0.95)';                          // Púrpura (665-700mm+)
+    if (intensity < 0.10) return 'rgba(0, 0, 255, 0.6)';
+    if (intensity < 0.20) return 'rgba(0, 128, 255, 0.65)';
+    if (intensity < 0.30) return 'rgba(0, 255, 255, 0.7)';
+    if (intensity < 0.40) return 'rgba(0, 255, 128, 0.75)';
+    if (intensity < 0.50) return 'rgba(0, 255, 0, 0.8)';
+    if (intensity < 0.60) return 'rgba(128, 255, 0, 0.8)';
+    if (intensity < 0.70) return 'rgba(255, 255, 0, 0.85)';
+    if (intensity < 0.80) return 'rgba(255, 192, 0, 0.9)';
+    if (intensity < 0.90) return 'rgba(255, 128, 0, 0.9)';
+    if (intensity < 0.95) return 'rgba(255, 0, 0, 0.95)';
+    return 'rgba(128, 0, 128, 0.95)';
   }
 });
 
@@ -115,9 +108,8 @@ function initMap() {
   if (!mapContainer) return;
   
   try {
-    // ✅ Forzar dimensiones al contenedor
     mapContainer.style.width = '100%';
-    mapContainer.style.height = '400px'; // Altura fija para móvil
+    mapContainer.style.height = '400px';
 
     const isMobile = window.innerWidth < 768;
     mapContainer.style.height = isMobile ? '50vh' : '60vh';
@@ -125,7 +117,6 @@ function initMap() {
     map = L.map('map', {
       center: [39.4, -0.6],
       zoom: 8,
-      // ✅ Deshabilitar preferCanvas para evitar conflictos
       preferCanvas: false
     });
 
@@ -134,7 +125,6 @@ function initMap() {
       attribution: '© OpenStreetMap, © CartoDB',
       subdomains: 'abcd',
       maxZoom: 19,
-      // ✅ Asegurar que los tiles se renderizan correctamente
       crossOrigin: true
     }).addTo(map);
 
@@ -212,7 +202,6 @@ function loadGeoJsonData() {
       geoJsonData = data;
       console.log('Datos cargados:', data.features.length, 'features');
       
-      // ✅ Verificar datos
       const conDatos = data.features.filter(f => {
         const v = f.properties?.meteo_prec;
         return v !== null && v !== undefined && !isNaN(v) && v > 0;
@@ -281,24 +270,6 @@ function createHeatmapLayer() {
   })
   .filter(p => p !== null);
   
-  // const heatPoints = [];
-  
-  // geoJsonData.features.forEach(feature => {
-  //   const valor = feature.properties?.meteo_prec;
-    
-  //   // ✅ FILTRAR ESTRICTAMENTE: solo > 0
-  //   if (feature.geometry && valor > 0) {
-  //     const centroid = calcularCentroide(feature.geometry);
-  //     if (centroid) {
-  //       heatPoints.push({
-  //         lat: centroid[0],
-  //         lng: centroid[1],
-  //         value: Number(valor)
-  //       });
-  //     }
-  //   }
-  // });
-  
   console.log('Puntos para heatmap (>0):', heatPoints.length);
   
   if (heatPoints.length === 0) {
@@ -328,18 +299,15 @@ function getFeatureStyle(feature) {
 }
 
 function getPrecipColor(v) {
-  // Color para sin datos o 0
-  if (v === null || v === undefined || isNaN(v)) return '#f7fcb9'; // Gris oscuro para sin datos
-  if (v === 0) return '#f7fcb9'; // Color fondo para 0mm
-  
-  // Escala de colores para valores > 0
+  if (v === null || v === undefined || isNaN(v)) return '#f7fcb9';
+  if (v === 0) return '#f7fcb9';
   if (v > 600) return '#49006a';
   if (v > 400) return '#bd0026';
   if (v > 200) return '#f03b20';
   if (v > 100) return '#fd8d3c';
   if (v > 50) return '#fecc5c';
   if (v > 10) return '#ffffb2';
-  return '#f7fcb9'; // Muy bajo (0-10mm)
+  return '#f7fcb9';
 }
 
 function onEachFeature(feature, layer) {
@@ -347,8 +315,7 @@ function onEachFeature(feature, layer) {
     const props = feature.properties || {};
     const value = props.meteo_prec;
     const nombre = props.meteo_estacion || props.NAMEUNIT || props.nombre || 'Municipio desconocido';
-    
-    // ✅ Solo mostrar tooltip si hay datos
+
     if (value !== null && value !== undefined && !isNaN(value)) {
       layer.bindTooltip(`
         <div class="map-tooltip">
@@ -458,7 +425,6 @@ function updateLegend() {
       `;
     }
     if (gradient) {
-      // Gradiente estilo ECMWF/meteorológico
       gradient.style.backgroundImage = `linear-gradient(to right, 
         #0000ff 0%, 
         #0080ff 15%, 
@@ -480,13 +446,11 @@ function addMapSource(text) {
   const mapDiv = document.getElementById('map');
   if (!mapDiv) return;
 
-  // eliminar anterior si existe
   const existing = mapDiv.parentElement.querySelector('.map-source');
   if (existing) existing.remove();
 
   const source = document.createElement('div');
   source.className = 'map-source';
-  // source.textContent = `Fuente: ${text}`;
   source.innerHTML = `Fuente: <a href="https://www.avamet.org/mx-meteoxarxa.php?data=2024-10-29" target="_blank" rel="noopener">AVAMET</a>`;
 
 
@@ -531,12 +495,6 @@ function resetMap() {
   const defaultBtn = document.getElementById('mode-choropleth');
   if (defaultBtn) defaultBtn.classList.add('active');
 }
-
-// if (document.readyState === 'loading') {
-//   document.addEventListener('DOMContentLoaded', () => setTimeout(initMap, 100));
-// } else {
-//   setTimeout(initMap, 100);
-// }
 
 window.initMap = initMap;
 window.changeMapMode = changeMapMode;

@@ -157,7 +157,6 @@ function initComboChart(data) {
     }
   });
   
-  // Añadir fuente debajo del gráfico
   addChartSource('comboChart', 'AEMET / AVAMET / CHJ');
 }
 
@@ -296,7 +295,6 @@ function initMultiChart(data) {
     }
   });
   
-  // Añadir fuente debajo del gráfico
   addChartSource('multiLineChart', 'AEMET / AVAMET / CHJ');
 }
 
@@ -471,7 +469,6 @@ function loadSeaTempChart() {
         }
       });
       
-      // Añadir fuente debajo del gráfico
       addChartSource('seaTempChart', 'CEAM, AEMET y Copernicus Marine Service');
     })
     .catch(err => {
@@ -482,26 +479,21 @@ function loadSeaTempChart() {
     });
 }
 
-// Función auxiliar para añadir fuente debajo del gráfico
 function addChartSource(canvasId, chartName) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
   
-  // Buscar contenedor padre
   const container = canvas.closest('.chart-container') || canvas.parentElement;
   if (!container) return;
   
-  // Eliminar fuente anterior si existe
   const existingSource = container.querySelector('.chart-source');
   if (existingSource) {
     existingSource.remove();
   }
   
-  // Crear elemento de fuente
   const sourceDiv = document.createElement('div');
   sourceDiv.className = 'chart-source';
   sourceDiv.textContent = `Fuente: ${chartName}`;
   
-  // Insertar después del canvas
   canvas.insertAdjacentElement('afterend', sourceDiv);
 }
