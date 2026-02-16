@@ -26,8 +26,8 @@ $ mapshaper municipios_es.json \
     -simplify 15% \
     -clean \
     -o format=geojson municipios_cv_simplificado.geojson
-
-    ### 2. Integracion de Datos (Data Merging)
+```
+### 2. Integracion de Datos (Data Merging)
 Tras la simplificación geométrica, se desarrolló un script de procesamiento para unir la cartografía con los registros meteorológicos:
 
 * **Fuente de Clima:** Datos de precipitación diaria y horaria obtenidos de la red AVAMET y AEMET.
